@@ -8,7 +8,21 @@
 <script>
   
 /* global Tone, nn, d3, createWaveform, createSpectrum */
-const synth = new Tone.Synth().toDestination()
+const synth = new Tone.PolySynth({
+  oscillator: {
+    type: 'square4'
+  },
+  envelope: {
+    attack: 2,
+    decay: 4,
+    sustain: 0.5,
+    release: 4
+  }
+})
+const effect = new Tone.Reverb()
+
+synth.connect(effect)
+effect.toDestination()
 
 // All chords used in the instrument are defined here with their pitches; I'll be defining pitches for an Eb minor instrument
 const chords = {
@@ -61,11 +75,10 @@ function defineNote() {
     note = chordNotes[Math.floor(Math.random() * chordNotes.length)]
     }
 }
-
   
 //plays the note value set for note
 function playNote() {
-  synth.triggerAttackRelease(note, '0.2')
+  synth.triggerAttackRelease(note, '2')
 
   noteCounter ++
   
@@ -77,23 +90,30 @@ function playNote() {
     }
 }
 
-document.addEventListener('keydown', defineNote)
-document.addEventListener('keydown', playNote)
+document.addEventListener('keypress', defineNote)
+document.addEventListener('keypress', playNote)
   
 // UI
 const chordMarker = nn.create('div')
   .content('Current Chord: ' + currentChord)
   .addTo('body')
 
-// visualizations
 const wave = createWaveform()
 synth.connect(wave)
 
+nn.create('input')
+  .addTo('body')
+  .set({
+    type: 'text',
+    value: ''
+  })
+  
   // TO DO 
   // x make transitions list
   // x make chord list - note values
-  // o make note player function
+  // x make note player function
   // o tweak values of synth
   // o make & size UI text box
-  // o make UI current chord display
+  // x make UI current chord display
+  // o make certain inputs change chord rather than random (STRETCH)
 </script>
