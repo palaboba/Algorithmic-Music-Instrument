@@ -38,18 +38,15 @@ const chords = {
   Gbmaj7: [92.5, 185, 369.99, 739.99, 233.08, 466.16, 77.78, 155.56, 311.13, 174.61, 349.23, 698.46] //Gb, Bb, Db, F
 }
 
-//This will define what chords each chord can transition to
+//This will define what chords each chord can transition to; NOTE: Sometimes chords are listed multiple times- this is to weight them more heavily in the probability
 const progressions = {
-  Ebm: ['Db', 'Cb', 'Bmaj7', 'Bbm', 'Abm', 'Gb'],
-  Db: ['Ebm', 'Cb', 'Bmaj7', 'Bbm', 'Abm', 'Gb', 'Ebm7'],
-  Cb: ['Db', 'Ebm', 'Gb', 'Bb', 'Bbm', 'Abm', 'Ebm7'],
-  Bmaj7: ['Db', 'Gb', 'Bbm', 'Ebm'],
+  Ebm: ['Db', 'Bb', 'Bb', 'Bbm', 'Abm', 'Gb', 'Bbm', 'Abm', 'Gb'],
+  Db: ['Ebm', 'Bbm', 'Gb', 'Bbm', 'Gb'],
+  Cb: ['Ebm', 'Gb', 'Bb', 'Bb', 'Bbm', 'Abm'],
   Bbm: ['Cb', 'Ebm', 'Db', 'Gb', 'Abm'],
-  Abm: ['Bbm', 'Gb', 'Ebm', 'Db', 'Bb'],
+  Abm: ['Bbm', 'Gb', 'Ebm', 'Bb', 'Bb', 'Bb'],
   Gb: ['Cb', 'Db', 'Abm', 'Ebm', 'Bb', 'Bbm'],
-  Bb: ['Cb', 'Ebm'],
-  Ebm7: ['Bmaj7', 'Abm', 'Cb', 'Db', 'Ebm', 'Gbmaj7'],
-  Gbmaj7: ['Bmaj7']
+  Bb: ['Ebm']
 }
 
 //variables
@@ -78,7 +75,13 @@ function defineNote() {
   
 //plays the note value set for note
 function playNote() {
-  synth.triggerAttackRelease(note, '2')
+  if (noteCounter === 0) {
+    synth.triggerAttackRelease(note, '4', undefined, 1)
+  } else if (note >= 300) {
+    synth.triggerAttackRelease(note, '1.5', undefined, 0.25)
+  } else {
+    synth.triggerAttackRelease(note, '1.5', undefined, 0.6)
+  }
 
   noteCounter ++
   
@@ -101,11 +104,12 @@ const chordMarker = nn.create('div')
 const wave = createWaveform()
 synth.connect(wave)
 
-nn.create('input')
+nn.create('textarea')
   .addTo('body')
   .set({
     type: 'text',
-    value: ''
+    value: '',
+    style: 'width: 100%; height: 100vh; font-size: 24px;'
   })
   
   // TO DO 
