@@ -1,0 +1,99 @@
+<body></body>
+<script src="https://unpkg.com/tone"></script>
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://algorithmicmusic.online/js/create-spectrum.js"></script>
+<script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+<script>
+  
+/* global Tone, nn, d3, createWaveform, createSpectrum */
+const synth = new Tone.Synth().toDestination()
+
+// All chords used in the instrument are defined here with their pitches; I'll be defining pitches for an Eb minor instrument
+const chords = {
+  Ebm: [77.78, 155.56, 311.13, 622.25, 185, 369.99, 116.54, 233.08, 466.16], //Eb, Gb, Bb
+  Db: [73.42, 146.83, 293.66, 587.33, 174.61, 349.23, 110, 220, 440], //Db, F, A
+  Cb: [61.74, 123.47, 246.94, 493.88, 164.81, 329.63, 92.5, 185, 369.99], //Cb, Eb, Gb
+  Bmaj7: [61.74, 123.47, 246.94, 493.88, 138.59, 277.18, 87.31, 174.61, 349.23, 233.08, 466.16], //B, Db, Fb, A#
+  Bbm: [58.27, 116.54, 233.08, 466.16, 138.59, 277.18, 87.31, 174.61, 349.23], //Bb, Db, F
+  Abm: [51.91, 103.83, 207.65, 415.3, 123.47, 246.94, 77.78, 155.56, 311.13], //Ab, Cb, Eb
+  Gb: [92.5, 185, 369.99, 739.99, 233.08, 466.16, 77.78, 155.56, 311.13], //Gb, Bb, Db
+  Bb: [58.27, 116.54, 233.08, 466.16, 146.83, 293.66, 87.31, 174.61, 349.23], //Bb, D, F
+  Ebm7: [77.78, 155.56, 311.13, 622.25, 185, 369.99, 116.54, 233.08, 466.16, 138.59, 277.18, 554.37], //Eb, Gb, Bb, Db
+  Gbmaj7: [92.5, 185, 369.99, 739.99, 233.08, 466.16, 77.78, 155.56, 311.13, 174.61, 349.23, 698.46] //Gb, Bb, Db, F
+}
+
+//This will define what chords each chord can transition to
+const progressions = {
+  Ebm: ['Db', 'Cb', 'Bmaj7', 'Bbm', 'Abm', 'Gb'],
+  Db: ['Ebm', 'Cb', 'Bmaj7', 'Bbm', 'Abm', 'Gb', 'Ebm7'],
+  Cb: ['Db', 'Ebm', 'Gb', 'Bb', 'Bbm', 'Abm', 'Ebm7'],
+  Bmaj7: ['Db', 'Gb', 'Bbm', 'Ebm'],
+  Bbm: ['Cb', 'Ebm', 'Db', 'Gb', 'Abm'],
+  Abm: ['Bbm', 'Gb', 'Ebm', 'Db', 'Bb'],
+  Gb: ['Cb', 'Db', 'Abm', 'Ebm', 'Bb', 'Bbm'],
+  Bb: ['Cb', 'Ebm'],
+  Ebm7: ['Bmaj7', 'Abm', 'Cb', 'Db', 'Ebm', 'Gbmaj7'],
+  Gbmaj7: ['Bmaj7']
+}
+
+//variables
+let currentChord = 'Ebm'
+let note = 400
+let noteCounter = 0
+const switchThreshold = 15
+
+//Functions
+//Chord Switcher
+function switchChord() {
+  const possibleChords = progressions[currentChord]
+  currentChord = possibleChords[Math.floor(Math.random() * possibleChords.length)]
+  noteCounter = 0
+}
+
+//Defines what value noteCounter has
+function defineNote() {
+  const chordNotes = chords[currentChord]
+  if (noteCounter === 0) {
+    note = chordNotes[0]
+    } else {
+    note = chordNotes[Math.floor(Math.random() * chordNotes.length)]
+    }
+}
+
+  
+//plays the note value set for note
+function playNote() {
+  synth.triggerAttackRelease(note, '0.2')
+
+  noteCounter ++
+  
+  if (noteCounter >= switchThreshold) {
+    switchChord()
+    noteCounter = 0
+    
+  chordMarker.content('Current Chord: ' + currentChord)
+    }
+}
+
+document.addEventListener('keydown', defineNote)
+document.addEventListener('keydown', playNote)
+  
+// UI
+const chordMarker = nn.create('div')
+  .content('Current Chord: ' + currentChord)
+  .addTo('body')
+
+// visualizations
+const wave = createWaveform()
+synth.connect(wave)
+
+  // TO DO 
+  // x make transitions list
+  // x make chord list - note values
+  // o make note player function
+  // o tweak values of synth
+  // o make & size UI text box
+  // o make UI current chord display
+</script>
