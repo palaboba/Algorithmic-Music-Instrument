@@ -109,12 +109,16 @@ nn.create('textarea')
     style: 'width: 100%; height: 100vh; font-size: 24px;'
   })
   
+const wave = createWaveform()
+synth.connect(wave)
+
+  
   // TO DO 
   // x make transitions list
   // x make chord list - note values
   // x make note player function
-  // o tweak values of synth
-  // o make & size UI text box
+  // x tweak values of synth
+  // x make & size UI text box
   // x make UI current chord display
   // o make certain inputs change chord rather than random (STRETCH)
 </script>
