@@ -24,9 +24,8 @@
     .firefly {
     position: absolute;
     border-radius: 50%;
-    opacity: 0.8;
+    opacity: 1;
     transition: opacity 1.5s ease-out, transform 2s ease-out;
-    filter: blur(6px);
   }
 </style>
 <title>Mood Setter</title>
@@ -113,7 +112,7 @@ function fireflies() {
   let size = Math.random() * 40 + 30; // Random size between 20px - 40px
   
   const light = nn.create('div')
-    .addTo('body')
+    .addTo(pane)
     .set({ class: 'firefly' });
   
   console.log("Created light element:", light);
@@ -147,6 +146,7 @@ function playNote() {
   }
 
   fireflies()
+  setTimeout(fireflies, 400)
   
   noteCounter ++
   
@@ -170,6 +170,22 @@ const chordMarker = nn.create('div')
     padding: '4px'
   })
 
+  //glass pane
+const pane = nn.create('div')
+  .addTo('body')
+  .css({
+    height: '100vh',
+    width: '100vw',
+    position: 'fixed',
+    left: '0px',
+    top: '0px',
+    //backgroundColor: 'red',
+    zIndex: '-10',
+    filter: 'blur(6px)',
+    //backgroundImage: 'url(https://www.clker.com/cliparts/E/5/y/w/0/4/foggy-weather.svg)'
+    backgroundImage: 'radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 42%, rgba(196,229,237,0.4780112728685224) 91%)'
+  })
+
   //textbox
 nn.create('textarea')
   .addTo('body')
@@ -178,12 +194,13 @@ nn.create('textarea')
     value: 'Start typing to play'
   })
   .css({
-    backgroundColor: '#1e1e1e',
+    backgroundColor: 'rgba(30, 30, 30, .5)',
     color: '#ffffff',
     border: '4px solid #444',
     width: '100%',
     height: 'calc(100vh - 73.2px)',
-    fontSize: '24px'
+    fontSize: '24px',
+    mixBlendMode: 'overlay'
 })
   
   //download button
