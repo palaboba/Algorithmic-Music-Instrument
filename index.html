@@ -1,3 +1,36 @@
+<head>
+  <style>
+  body {
+    background-color: #121212;
+    color: #ffffff;
+    margin: 0
+  }
+
+  button {
+    background-color: #333;
+    color: #ffffff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+    *{
+      box-sizing: border-box
+    }
+    
+  button:hover {
+    background-color: #555;
+  }
+    .firefly {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.8;
+    transition: opacity 1.5s ease-out, transform 2s ease-out;
+    filter: blur(6px);
+  }
+</style>
+<title>Mood Setter</title>
+</head>
 <body></body>
 <script src="https://unpkg.com/tone"></script>
 <script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library/build/nn.min.js?v=1"></script>
@@ -6,8 +39,9 @@
 <script src="https://algorithmicmusic.online/js/create-waveform.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
 <script>
-  
-/* global Tone, nn, d3, createWaveform, createSpectrum */
+console.log("NN Library Loaded:", nn);
+document.addEventListener('DOMContentLoaded', () => {
+  /* global Tone, nn, d3, createWaveform, createSpectrum */
 const synth = new Tone.PolySynth({
   oscillator: {
     type: 'square4'
@@ -26,16 +60,17 @@ effect.toDestination()
 
 // All chords used in the instrument are defined here with their pitches; I'll be defining pitches for an Eb minor instrument
 const chords = {
-  Ebm: [77.78, 155.56, 311.13, 622.25, 185, 369.99, 116.54, 233.08, 466.16], //Eb, Gb, Bb
-  Db: [73.42, 146.83, 293.66, 587.33, 174.61, 349.23, 110, 220, 440], //Db, F, A
-  Cb: [61.74, 123.47, 246.94, 493.88, 164.81, 329.63, 92.5, 185, 369.99], //Cb, Eb, Gb
-  Bmaj7: [61.74, 123.47, 246.94, 493.88, 138.59, 277.18, 87.31, 174.61, 349.23, 233.08, 466.16], //B, Db, Fb, A#
-  Bbm: [58.27, 116.54, 233.08, 466.16, 138.59, 277.18, 87.31, 174.61, 349.23], //Bb, Db, F
-  Abm: [51.91, 103.83, 207.65, 415.3, 123.47, 246.94, 77.78, 155.56, 311.13], //Ab, Cb, Eb
-  Gb: [92.5, 185, 369.99, 739.99, 233.08, 466.16, 77.78, 155.56, 311.13], //Gb, Bb, Db
+  Ebm: [77.78, 155.56, 311.13, 622.25, 185, 369.99, 116.54, 233.08, 466.16], //Eb, Gb, Bb *
+  Db: [73.42, 146.83, 293.66, 587.33, 174.61, 349.23, 110, 220, 440], //Db, F, A *
+  Cb: [61.74, 123.47, 246.94, 493.88, 164.81, 329.63, 92.5, 185, 369.99], //Cb, Eb, Gb *
+  Cbmaj7: [61.74, 123.47, 246.94, 493.88, 138.59, 277.18, 87.31, 174.61, 349.23, 233.08, 466.16], //Cb, Eb, Gb, Bb
+  Bbm: [58.27, 116.54, 233.08, 466.16, 138.59, 277.18, 87.31, 174.61, 349.23], //Bb, Db, F *
+  Abm: [51.91, 103.83, 207.65, 415.3, 123.47, 246.94, 77.78, 155.56, 311.13], //Ab, Cb, Eb *
+  Gb: [92.5, 185, 369.99, 739.99, 233.08, 466.16, 77.78, 155.56, 311.13], //Gb, Bb, Db *
   Bb: [58.27, 116.54, 233.08, 466.16, 146.83, 293.66, 87.31, 174.61, 349.23], //Bb, D, F
-  Ebm7: [77.78, 155.56, 311.13, 622.25, 185, 369.99, 116.54, 233.08, 466.16, 138.59, 277.18, 554.37], //Eb, Gb, Bb, Db
+  Ebm7: [77.78, 155.56, 311.13, 622.25, 185, 369.99, 116.54, 233.08, 466.16, 138.59, 277.18, 554.37], //Eb, Gb, Bb, Db *
   Gbmaj7: [92.5, 185, 369.99, 739.99, 233.08, 466.16, 77.78, 155.56, 311.13, 174.61, 349.23, 698.46] //Gb, Bb, Db, F
+
 }
 
 //This will define what chords each chord can transition to; NOTE: Sometimes chords are listed multiple times- this is to weight them more heavily in the probability
@@ -72,6 +107,34 @@ function defineNote() {
     note = chordNotes[Math.floor(Math.random() * chordNotes.length)]
     }
 }
+
+function fireflies() {
+  console.log("Firefly function is running!");
+  let size = Math.random() * 40 + 30; // Random size between 20px - 40px
+  
+  const light = nn.create('div')
+    .addTo('body')
+    .set({ class: 'firefly' });
+  
+  console.log("Created light element:", light);
+  
+  // Set initial position, size, and color
+  light.style.width = `${size}px`;
+  light.style.height = `${size}px`;
+  light.style.left = `${Math.random() * window.innerWidth}px`;
+  light.style.top = `${Math.random() * window.innerHeight}px`;
+  light.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+  
+  // Let the light appear for a brief moment, then trigger movement & fading
+  setTimeout(() => {
+    light.style.opacity = '0';
+    light.style.transform = `translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(1.5)`;
+  }, 100); 
+
+  // Remove the light after it fully fades out
+  setTimeout(() => light.remove(), 2000);
+
+}
   
 //plays the note value set for note
 function playNote() {
@@ -83,6 +146,8 @@ function playNote() {
     synth.triggerAttackRelease(note, '1.5', undefined, 0.6)
   }
 
+  fireflies()
+  
   noteCounter ++
   
   if (noteCounter >= switchThreshold) {
@@ -97,28 +162,41 @@ document.addEventListener('keypress', defineNote)
 document.addEventListener('keypress', playNote)
   
 // UI
+  //current chord
 const chordMarker = nn.create('div')
   .content('Current Chord: ' + currentChord)
   .addTo('body')
+  .css({
+    padding: '4px'
+  })
 
+  //textbox
 nn.create('textarea')
   .addTo('body')
   .set({
     type: 'text',
-    value: 'Type here!',
-    style: 'width: 100%; height: 100vh; font-size: 24px;'
+    value: 'Start typing to play'
   })
+  .css({
+    backgroundColor: '#1e1e1e',
+    color: '#ffffff',
+    border: '4px solid #444',
+    width: '100%',
+    height: 'calc(100vh - 73.2px)',
+    fontSize: '24px'
+})
   
-const wave = createWaveform()
-synth.connect(wave)
+  //download button
+nn.create('button')
+  .content('Download Text')
+  .addTo('body')
+  .on('click', () => {
+    const blob = new Blob([textBox.get().value], { type: 'text/plain' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = prompt('What would you like to name your piece?', 'fragmented-echoes')
+    link.click()
+  })
+});
 
-  
-  // TO DO 
-  // x make transitions list
-  // x make chord list - note values
-  // x make note player function
-  // x tweak values of synth
-  // x make & size UI text box
-  // x make UI current chord display
-  // o make certain inputs change chord rather than random (STRETCH)
 </script>
