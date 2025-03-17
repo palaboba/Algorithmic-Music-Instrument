@@ -24,8 +24,8 @@
     .firefly {
     position: absolute;
     border-radius: 50%;
-    opacity: 1;
-    transition: opacity 1.5s ease-out, transform 2s ease-out;
+    opacity: 0.90;
+    transition: opacity 2s ease-out, transform 5s ease-out;
   }
 </style>
 <title>Mood Setter</title>
@@ -47,7 +47,7 @@ const synth = new Tone.PolySynth({
   },
   envelope: {
     attack: 2,
-    decay: 4,
+    decay: 6,
     sustain: 0.5,
     release: 4
   }
@@ -87,7 +87,7 @@ const progressions = {
 let currentChord = 'Ebm'
 let note = 400
 let noteCounter = 0
-const switchThreshold = 15
+const switchThreshold = 20
 
 //Functions
 //Chord Switcher
@@ -109,7 +109,7 @@ function defineNote() {
 
 function fireflies() {
   console.log("Firefly function is running!");
-  let size = Math.random() * 40 + 30; // Random size between 20px - 40px
+  let size = Math.random() * 70 + 50; // Random size between 20px - 40px
   
   const light = nn.create('div')
     .addTo(pane)
@@ -146,7 +146,8 @@ function playNote() {
   }
 
   fireflies()
-  setTimeout(fireflies, 400)
+  setTimeout(fireflies, 300)
+  setTimeout(fireflies, 500)
   
   noteCounter ++
   
@@ -181,9 +182,9 @@ const pane = nn.create('div')
     top: '0px',
     //backgroundColor: 'red',
     zIndex: '-10',
-    filter: 'blur(6px)',
+    filter: 'blur(30px)',
     //backgroundImage: 'url(https://www.clker.com/cliparts/E/5/y/w/0/4/foggy-weather.svg)'
-    backgroundImage: 'radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(0,212,255,1) 42%, rgba(196,229,237,0.4780112728685224) 91%)'
+    backgroundImage: 'radial-gradient(circle, rgba(43,43,46,1) 13%, rgba(63,69,70,0.9457983877144608) 65%, rgba(101,106,107,0.8365546902354692) 96%)'
   })
 
   //textbox
